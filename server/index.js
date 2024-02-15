@@ -11,11 +11,11 @@ dotenv.config();
 const app = express();
 const OPENAI_KEY = process.env.OPENAI_KEY;
 const openai = new OpenAI({ apiKey: OPENAI_KEY });
-
+const prodOrigins = [process.env.ORIGIN1, process.env.ORIGIN2];
 app.use(express.json());
 app.use(express.static("public"));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'your-production-domain.com' : ('http://localhost:3000', 'http://localhost:5173')
+  origin: process.env.NODE_ENV === 'production' ? ('https://levi-server.onrender.com',prodOrigins) : ('http://localhost:3000', 'http://localhost:5173','https://levi-server.onrender.com')
 }));
 // Adjusting __dirname calculation for ES Modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
