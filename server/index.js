@@ -14,14 +14,14 @@ const openai = new OpenAI({ apiKey: OPENAI_KEY });
 const prodOrigins = [process.env.ORIGIN1, process.env.ORIGIN2];
 app.use(express.json());
 app.use(express.static("public"));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Allow all domains
-  // Or, use the specific origin you want to allow, e.g., http://localhost:5173
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*'); // Allow all domains
+//   // Or, use the specific origin you want to allow, e.g., http://localhost:5173
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? (prodOrigins,"https://l-e-v-i-interface-vlxb.vercel.app/","levi-frontend.vercel.app","https://l-e-v-i-interface-vlxb.vercel.app/",'http://localhost:5173') : ['http://localhost:3000', 'http://localhost:5173', 'https://levi-server.onrender.com']
+  origin: process.env.NODE_ENV === 'production' ? prodOrigins : ['http://localhost:3000', 'http://localhost:5173']
 }));
 
 // Adjusting __dirname calculation for ES Modules
