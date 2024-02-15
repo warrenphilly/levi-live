@@ -160,7 +160,7 @@ for (let i = 0; i < text.length; i++) {
     setButtonDisabled(true);
     showThinkingAnimation(); // Log the question
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/ask`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
