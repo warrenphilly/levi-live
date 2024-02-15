@@ -152,7 +152,7 @@ for (let i = 0; i < text.length; i++) {
       startRecording();
     }
   };
-  console.log(import.meta.env.VITE_API_URL)
+  
 
   const sendQuestion = async (question) => {
     setConversation([...conversation, { sender: "user", text: question }]);

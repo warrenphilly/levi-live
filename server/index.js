@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? prodOrigins : ['http://localhost:3000', 'http://localhost:5173', 'https://levi-server.onrender.com']
+  origin: process.env.NODE_ENV === 'production' ? (prodOrigins,"https://l-e-v-i-interface-vlxb.vercel.app/","levi-frontend.vercel.app","https://l-e-v-i-interface-vlxb.vercel.app/",'http://localhost:5173') : ['http://localhost:3000', 'http://localhost:5173', 'https://levi-server.onrender.com']
 }));
 
 // Adjusting __dirname calculation for ES Modules
