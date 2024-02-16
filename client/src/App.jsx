@@ -215,7 +215,7 @@ const buttonClasses = `font-bold ml-[10px] flex items-center justify-center px-4
 }`;
 
 return (
-  <div className="App bg-gray-800 min-h-screen flex flex-col items-center justify-center text-white">
+  <div className="App bg-gray-800 min-h-screen min-w-screen flex flex-col items-center justify-center text-white">
     {/* Div for Levi&apos;s Introduction */}
 <div className="w-full px-4 py-8 max-w-4xl text-center sm:p-8">
   <h1 className="text-3xl sm:text-5xl">
