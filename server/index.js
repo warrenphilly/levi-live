@@ -25,12 +25,7 @@ app.use(cors({
   origin: process.env.NODE_ENV === 'production' ? [process.env.ORIGIN1, process.env.ORIGIN2, "https://tester-beige.vercel.app"] : ['http://localhost:3000', 'http://localhost:5173']
 }));
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
-}
+
 
 app.post("/ask", async (req, res) => {
   try {
@@ -47,6 +42,7 @@ app.post("/ask", async (req, res) => {
     const audioFilePath = path.join(tempDirectory, audioFileName);
 
     await fs.promises.writeFile(audioFilePath, audioBuffer);
+    console.log(`Audio file written at: ${audioFilePath}`);
     res.json({ audioUrl: `/audio/${audioFileName}`, text: answer });
   } catch (error) {
     console.error(error);
