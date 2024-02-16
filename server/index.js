@@ -1,7 +1,8 @@
+
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { createClient } from "@supabase/supabase-js";
+import fs from "fs";
 import OpenAI from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -12,16 +13,19 @@ const app = express();
 const OPENAI_KEY = process.env.OPENAI_KEY;
 const openai = new OpenAI({ apiKey: OPENAI_KEY });
 
-// Supabase setup
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Adjusting __dirname calculation for ES Modules
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Directory to store audio files, pointing to the Render disk mount path
+const tempDirectory = "/mnt/render-storage";
 
 app.use(express.json());
 app.use(express.static("public"));
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' ? [process.env.ORIGIN1, process.env.ORIGIN2, "https://tester-beige.vercel.app"] : ['http://localhost:3000', 'http://localhost:5173']
 }));
+
+
 
 app.post("/ask", async (req, res) => {
   try {
@@ -35,38 +39,31 @@ app.post("/ask", async (req, res) => {
 
     const audioBuffer = Buffer.from(await ttsResponse.arrayBuffer());
     const audioFileName = `audio_${new Date().getTime()}.mp3`;
+    const audioFilePath = path.join(tempDirectory, audioFileName);
 
-    // Upload to Supabase
-    const { data, error } = await supabase
-      .storage
-      .from('voice')
-      .upload(`audio/${audioFileName}`, audioBuffer, {
-        contentType: 'audio/mp3',
-      });
-
-    if (error) {
-      throw error;
-    }
-
-    // Generate public URL
-    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${data.Key}`;
-
-    res.json({ audioUrl: publicUrl, text: answer });
+    await fs.promises.writeFile(audioFilePath, audioBuffer);
+    console.log(`Audio file written at: ${audioFilePath}`);
+    res.json({ audioUrl: `/audio/${audioFileName}`, text: answer });
   } catch (error) {
     console.error(error);
     res.status(500).send(error.toString());
   }
 });
 
+app.get("/audio/:filename", (req, res) => {
+  const filePath = path.join(tempDirectory, req.params.filename);
+  res.sendFile(filePath, function (err) {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error serving audio file.");
+    }
+  });
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-
 
 // import cors from "cors";
 // import dotenv from "dotenv";
@@ -85,16 +82,23 @@ app.listen(PORT, () => {
 // // Adjusting __dirname calculation for ES Modules
 // const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// // Directory to store audio files, pointing to the Render disk mount path
-// const tempDirectory = "/mnt/render-storage";
+// // Define the directory to store audio files, pointing to the Render disk mount path
+// const tempDirectory = "/mnt/render-storage"; // Update this path according to your Render disk mount path
 
+// // Middleware configurations
 // app.use(express.json());
 // app.use(express.static("public"));
 // app.use(cors({
 //   origin: process.env.NODE_ENV === 'production' ? [process.env.ORIGIN1, process.env.ORIGIN2, "https://tester-beige.vercel.app"] : ['http://localhost:3000', 'http://localhost:5173']
 // }));
 
-
+// // Serve static files from React app in production
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, 'build')));
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'build', 'index.html'));
+//   });
+// }
 
 // app.post("/ask", async (req, res) => {
 //   try {
@@ -111,20 +115,23 @@ app.listen(PORT, () => {
 //     const audioFilePath = path.join(tempDirectory, audioFileName);
 
 //     await fs.promises.writeFile(audioFilePath, audioBuffer);
-//     console.log(`Audio file written at: ${audioFilePath}`);
-//     res.json({ audioUrl: `/audio/${audioFileName}`, text: answer });
+//     res.json({ audioUrl: `/mnt/render-storage/${audioFileName}`, text: answer });
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).send(error.toString());
 //   }
 // });
-
-// app.get("/audio/:filename", (req, res) => {
+// // changed audio to /mnt/render-storage
+// app.get("/mnt/render-storage/:filename", (req, res) => {
 //   const filePath = path.join(tempDirectory, req.params.filename);
 //   res.sendFile(filePath, function (err) {
 //     if (err) {
 //       console.error(err);
 //       res.status(500).send("Error serving audio file.");
+//     } else {
+//       fs.unlink(filePath, err => {
+//         if (err) console.error(`Error deleting ${filePath}`);
+//       });
 //     }
 //   });
 // });
@@ -133,4 +140,3 @@ app.listen(PORT, () => {
 // app.listen(PORT, () => {
 //   console.log(`Server running on port ${PORT}`);
 // });
-
