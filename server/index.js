@@ -15,7 +15,7 @@ const prodOrigins = [process.env.ORIGIN1, process.env.ORIGIN2];
 app.use(express.json());
 app.use(express.static("public"));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? (process.env.ORIGIN1, process.env.ORIGIN2) : ('http://localhost:3000', 'http://localhost:5173')
+  origin: process.env.NODE_ENV === 'production' ? (process.env.ORIGIN1, process.env.ORIGIN2,"https://tester-beige.vercel.app") : ('http://localhost:3000', 'http://localhost:5173')
 }));
 // Adjusting __dirname calculation for ES Modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
