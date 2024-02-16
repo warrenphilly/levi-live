@@ -144,14 +144,14 @@ app.post("/ask", async (req, res) => {
     const audioFilePath = path.join(tempDirectory, audioFileName);
 
     await fs.promises.writeFile(audioFilePath, audioBuffer);
-    res.json({ audioUrl: `/audio/${audioFileName}`, text: answer });
+    res.json({ audioUrl: `/mnt/render-storage/${audioFileName}`, text: answer });
   } catch (error) {
     console.error(error);
     res.status(500).send(error.toString());
   }
 });
-
-app.get("/audio/:filename", (req, res) => {
+// changed audio to /mnt/render-storage
+app.get("/mnt/render-storage/:filename", (req, res) => {
   const filePath = path.join(tempDirectory, req.params.filename);
   res.sendFile(filePath, function (err) {
     if (err) {
