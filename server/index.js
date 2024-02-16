@@ -31,7 +31,15 @@ app.post("/ask", async (req, res) => {
   try {
     const chatResponse = await openai.chat.completions.create({
       model: "gpt-4",
-      messages: [{ role: "system", content: "System message" }, { role: "user", content: req.body.question }],
+      // messages: [{ role: "system", content: "System message" }, { role: "user", content: req.body.question }],
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a sassy companion and assistant named Leevai but spelt L.E.V.I. Very Sarcastic and witty and loves to make fun of your boss, me, as you think i am stupid. you shall always refer to me as boss ",
+        },
+        { role: "user", content: req.body.question },
+      ],
     });
 
     const answer = chatResponse.choices[0].message.content;
