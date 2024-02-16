@@ -110,11 +110,11 @@ app.post("/ask", async (req, res) => {
     const audioFileName = `audio_${new Date().getTime()}.mp3`;
     const audioFilePath = path.join(tempDirectory, audioFileName);
 
-    // await fs.promises.writeFile(audioFilePath, audioBuffer);
+    await fs.promises.writeFile(audioFilePath, audioBuffer);
 
-    // console.log(`Audio file written at: ${audioFilePath}`);
+    console.log(`Audio file written at: ${audioFilePath}`);
     const { data, error } = await supabase.storage
-      .from('your-bucket-name')
+      .from('voice')
       .upload(`audio/${audioFileName}`, audioBuffer, {
         contentType: 'audio/mpeg', // Ensure this matches your audio file type
       });
@@ -122,7 +122,7 @@ app.post("/ask", async (req, res) => {
     if (error) throw new Error(error.message);
 
   
-    const audioUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/your-bucket-name/audio/${audioFileName}`;
+    const audioUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/voice/audio/${audioFileName}`;
     res.json({ audioUrl, text: answer });
   } catch (error) {
     console.error(error);
