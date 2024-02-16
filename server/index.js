@@ -72,12 +72,13 @@ app.post("/ask", async (req, res) => {
     res.status(500).send(error.toString());
   }
 });
+console.log(process.env.ORIGIN1, process.env.ORIGIN2,audioFilePath);
 
 app.get("/audio/:filename", (req, res) => {
   const filePath = path.join(tempDirectory, req.params.filename);
   res.sendFile(filePath, {}, function (err) {
     if (err) {
-      console.error(err);
+      console.error(err,"poop");
     } else {
       fs.unlink(filePath, (err) => {
         if (err) console.error(`Error deleting ${filePath}`);
