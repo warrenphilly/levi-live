@@ -246,7 +246,7 @@ return (
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="Ask a question"
-        className="p-4 w-full max-w-md mb-4 sm:mb-0 sm:mr-4 bg-[#535355] text-white py-2 rounded-lg"
+        className="p-4 w-full h-[40px] max-w-md mb-4 sm:mb-0 sm:mr-4 bg-[#535355] text-white py-2 rounded-lg"
       />
       <button
         onClick={stopRecording}
@@ -257,7 +257,7 @@ return (
       </button>
       <button
         onClick={toggleRecording}
-        className={`${buttonClasses} w-full sm:w-auto sm:ml-2`}
+        className={`${buttonClasses} w-full h-[40px] sm:w-auto sm:ml-2`}
         disabled={buttonDisabled}
       >
         {buttonText}
