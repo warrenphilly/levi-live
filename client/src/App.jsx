@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
- // Ensure Tailwind CSS is imported here
+// Ensure Tailwind CSS is imported here
 
 function App() {
   const [typing, setTyping] = useState(false);
@@ -14,13 +14,12 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingState, setRecordingState] = useState("start"); // 'start', 'stop', 'listening'
   const [recognition, setRecognition] = useState(null);
-  
+
   const conversationEndRef = useRef(null);
 
   useEffect(() => {
-    conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    conversationEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversation]); // Dependency array ensures effect runs every time conversation changes
-
 
   useEffect(() => {
     if ("webkitSpeechRecognition" in window) {
@@ -38,7 +37,6 @@ function App() {
         clearTimeout(silenceTimer.current);
         silenceTimer.current = setTimeout(() => {
           console.log("Silence detected. Stopping recording.");
-          
 
           speechRecognition.stop();
           sendQuestion(transcript);
@@ -83,20 +81,20 @@ function App() {
     }
 
     let typedText = "";
-const typingSpeed = 40; // milliseconds
-for (let i = 0; i < text.length; i++) {
-  setTimeout(() => {
-    typedText += text[i];
-    // Ensure we're updating the conversation with the current typedText
-    setConversation((conversation) => [
-      ...conversation.slice(0, -1),
-      { sender: "server", text: typedText },
-    ]);
-    if (i === text.length - 1) {
-      // Update any state as needed after typing is complete
+    const typingSpeed = 40; // milliseconds
+    for (let i = 0; i < text.length; i++) {
+      setTimeout(() => {
+        typedText += text[i];
+        // Ensure we're updating the conversation with the current typedText
+        setConversation((conversation) => [
+          ...conversation.slice(0, -1),
+          { sender: "server", text: typedText },
+        ]);
+        if (i === text.length - 1) {
+          // Update any state as needed after typing is complete
+        }
+      }, i * typingSpeed);
     }
-  }, i * typingSpeed);
-}
   };
 
   const showThinkingAnimation = () => {
@@ -152,7 +150,6 @@ for (let i = 0; i < text.length; i++) {
       startRecording();
     }
   };
-  
 
   const sendQuestion = async (question) => {
     setConversation([...conversation, { sender: "user", text: question }]);
@@ -179,6 +176,7 @@ for (let i = 0; i < text.length; i++) {
       }
       if (data.audioUrl) {
         const audioElement = document.getElementById("responseAudio");
+       
         audioElement.src = `${import.meta.env.VITE_API_URL}${data.audioUrl}`;
 
         audioElement.play();
@@ -187,8 +185,11 @@ for (let i = 0; i < text.length; i++) {
         console.log("No audio URL received");
         setAnswer("No audio response received.");
       }
-      setConversation([...conversation, { sender: "user", text: question }, { sender: "system", text: data.text }]);
-    
+      setConversation([
+        ...conversation,
+        { sender: "user", text: question },
+        { sender: "system", text: data.text },
+      ]);
     } catch (error) {
       console.error("Error sending question:", error);
       setAnswer("Failed to get a response.");
@@ -197,7 +198,7 @@ for (let i = 0; i < text.length; i++) {
     // Simulate a delay to fetch the response
 
     // Reset states after sending the question or handling an error
-    
+
     setQuestion(""); // Clear the question field
     setButtonText("Start Recording"); // Reset button text
     setButtonDisabled(false); // Enable the button
@@ -210,7 +211,6 @@ for (let i = 0; i < text.length; i++) {
       ? "bg-blue-500 hover:bg-blue-700"
       : buttonText === "Stop Recording"
       ? "bg-red-500 hover:bg-red-700"
- 
       : "bg-gray-500"
   }`;
   return (
@@ -222,11 +222,12 @@ for (let i = 0; i < text.length; i++) {
         </h1>
         <h1 className="text-2xl mt-[5px] mb-[30px]">Your only friend...</h1>
         <p className="text-md items-center justify-center mt-2 max-w-[700px]">
-          Here&apos;s the deal: I&apos;m an AI assistant, crafted with a dash of sarcasm
-          and a pinch of wit, at your service to enlighten, assist, or simply
-          entertain. Whether you&apos;re here to learn, study, or just chat, I&apos;ve got
-          you covered. Just try not to fall too hard for my charm. If you&apos;re
-          actually in the mood to learn something for once...check out my{" "}
+          Here&apos;s the deal: I&apos;m an AI assistant, crafted with a dash of
+          sarcasm and a pinch of wit, at your service to enlighten, assist, or
+          simply entertain. Whether you&apos;re here to learn, study, or just
+          chat, I&apos;ve got you covered. Just try not to fall too hard for my
+          charm. If you&apos;re actually in the mood to learn something for
+          once...check out my{" "}
           <a
             href="https://www.github.com/warrenphilly"
             className="text-blue-500 underlined"
@@ -234,25 +235,34 @@ for (let i = 0; i < text.length; i++) {
             rel="noopener noreferrer"
           >
             GitHub
-          </a> and remember to SPEAK CLEARLY and LOUDLY. I&apos;m a bit hard of hearing :)
+          </a>{" "}
+          and remember to SPEAK CLEARLY and LOUDLY. I&apos;m a bit hard of
+          hearing :)
         </p>
       </div>
 
       <div className="conversation overflow-y bg-gray-700 h-full rounded-xl shadow-inner w-screen max-w-[1100px] px-[40px] p-4 overflow-auto">
-      {conversation.map((message, index) => (
-        <div
-          key={index}
-          className={`message ${message.sender === "user" ? "text-right" : "text-left"}`}
-        >
-          <p
-            className={`inline-block rounded-lg mb-4 shadow-2xl ${message.sender === "user" ? "bg-blue-500 ml-[200px] p-4" : "bg-gray-600 mr-[20px] p-4"}`}
+        {conversation.map((message, index) => (
+          <div
+            key={index}
+            className={`message ${
+              message.sender === "user" ? "text-right" : "text-left"
+            }`}
           >
-            {message.text}
-          </p>
-        </div>
-      ))}
-      <div ref={conversationEndRef} /> {/* Invisible div at the end of your messages */}
-    </div>
+            <p
+              className={`inline-block rounded-lg mb-4 shadow-2xl ${
+                message.sender === "user"
+                  ? "bg-blue-500 ml-[200px] p-4"
+                  : "bg-gray-600 mr-[20px] p-4"
+              }`}
+            >
+              {message.text}
+            </p>
+          </div>
+        ))}
+        <div ref={conversationEndRef} />{" "}
+        {/* Invisible div at the end of your messages */}
+      </div>
 
       {/* Input and Button */}
       <div className="mt-4 flex flex-row justify-center mb-[70px] px-[20px] w-full">
