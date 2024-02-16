@@ -71,8 +71,9 @@ app.post("/ask", async (req, res) => {
     console.error(error);
     res.status(500).send(error.toString());
   }
+  console.log(audioFilePath, "audioFilePath" , audioFileName, "audioFileName" , audioBuffer, "audioBuffer");
 });
-console.log(process.env.ORIGIN1, process.env.ORIGIN2,audioFilePath);
+console.log(process.env.ORIGIN1, process.env.ORIGIN2);
 
 app.get("/audio/:filename", (req, res) => {
   const filePath = path.join(tempDirectory, req.params.filename);
